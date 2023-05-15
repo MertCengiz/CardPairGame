@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QGridLayout>
+#include <QRandomGenerator>
 
 class PairMatch : public QWidget {
 
@@ -17,6 +18,7 @@ private slots:
     void Increment();
     void Decrement();
     void Refresh();
+    QString GenerateRandomMatrices(int*, QString *);
 
 private:
     QLabel *scoreWrite;
@@ -26,5 +28,9 @@ private:
 
     QString previousString;
     int pushOrder = 0;
-    int textEqual = 0;
+    int textEqual = -5000;
+
+    QString elements[15] = {"Kamilkoc", "Pamukkale", "Varan", "Metro", "Luks Artvin", "Suha",
+    "Nestle", "Ferrero", "Torku", "Ulker", "Eti", "Pasta of Noah's Ankara", "Coca Cola", "Pepsi", "Cola Turka"};
+    int used[15] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 };
