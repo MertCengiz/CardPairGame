@@ -20,53 +20,61 @@ PairMatch::PairMatch(QWidget *parent) : QWidget(parent) {
     connect(newGameButton, &QPushButton::clicked, this, &PairMatch::Refresh);
     // Refresh everything (Restart the game)
 
-    QPushButton *buttons[5][6];   // Store the buttons in order to change it when necessary.
-    QString randomNames[5][6];
+    int size = sizeof(elements)/sizeof(elements[0]);
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::shuffle(elements, elements+size, rng);
+
+
 
     for (int i = 1; i <= 5; i++){
         for (int j = 0; j <= 5; j++){
-            QString randomString = GenerateRandomMatrices(used, elements);
-            randomNames[i - 1][j] = randomString;
+            QString randomString = elements[6*(i-1)+j];
             buttons[i - 1][j] = new QPushButton("?", this);
-            connect(buttons[i - 1][j], &QPushButton::clicked, this, &PairMatch::Increment);
-            connect(buttons[i - 1][j], &QPushButton::clicked, this, &PairMatch::Decrement);
+            buttons[i - 1][j]->setProperty("name", randomString);
+            connect(buttons[i - 1][j], &QPushButton::clicked, this, &PairMatch::ClickedHandler);
             grid->addWidget(buttons[i - 1][j], i, j);
         }
     }
-
-    // TODO: When pressed, change the button with its version containing name from its index.
-    // TODO: Make refresh every button question mark.
 
     /*buttons[2][1] = new QPushButton(randomNames[2][1], this);     // TESTING STUFF, NOT IMPORTANT!
     connect(buttons[2][1], &QPushButton::clicked, this, &PairMatch::Increment);
     connect(buttons[2][1], &QPushButton::clicked, this, &PairMatch::Decrement);
     grid->addWidget(buttons[2][1], 2, 1);*/
+   // buttons[2][1] -> setText(randomNames[2][1]);
 }
 
-void PairMatch::Increment() {
+void PairMatch::ClickedHandler() {
 
-    int val = scoreCount->text().toInt();
-    QString text = scoreCount->text();
-    if (pushOrder % 2 == 0){
-        previousString = text;
-    }
-    else if (pushOrder % 2 == 1){
-        textEqual = QString::compare(previousString, text, Qt::CaseInsensitive);
-        if (textEqual == 0) // TODO: Fix the bug in comparing (Always executes this if block)
-            val++;
-    }
-    scoreCount->setText(QString::number(val));
-}
-
-void PairMatch::Decrement() {
-
-    int val = remCount->text().toInt();
-    if (pushOrder % 2 == 1 && pushOrder > 0)
-        val--;  // Decrease val if the two string are not the same.
-    pushOrder++;
-    remCount->setText(QString::number(val));
-    if (val == 0)
+    int score = scoreCount->text().toInt();
+    int remaining = remCount->text().toInt();
+    if (remaining == 0 || score == 15)
         QApplication::quit(); // Exit the game if no tries left.
+    QString text = scoreCount->text();
+    QPushButton *clickedButton = qobject_cast<QPushButton*>(sender());
+    if (previousButton != clickedButton){
+        clickedButton->setText(clickedButton->property("name").toString());
+        if (pushOrder % 2 == 0){
+            previousButton = clickedButton;
+        }
+        else if (pushOrder % 2 == 1){
+            textEqual = QString::compare(previousButton->property("name").toString(), clickedButton->property("name").toString(), Qt::CaseInsensitive);
+            if (textEqual == 0){
+                score++;
+                disconnect(previousButton, &QPushButton::clicked, this, &PairMatch::ClickedHandler);
+                disconnect(clickedButton, &QPushButton::clicked, this, &PairMatch::ClickedHandler);
+            }
+            else{
+                // TODO: Add delay!
+                clickedButton->setText("?");
+                previousButton->setText("?");
+            }
+            remaining--; // Decrease val if the two string are not the same.
+        }
+        pushOrder++;
+    }
+    remCount->setText(QString::number(remaining));
+    scoreCount->setText(QString::number(score));
 }
 
 void PairMatch::Refresh() {
@@ -75,15 +83,16 @@ void PairMatch::Refresh() {
     int remScore = 50;
     scoreCount->setText(QString::number(valScore));
     remCount->setText(QString::number(remScore));
-    // TODO: Refresh the question marks.
-}
-
-QString PairMatch:: GenerateRandomMatrices(int *used, QString *elements){
-    quint32 randIndex = QRandomGenerator::global()->bounded(15);
-    QString stringToWrite;
-    while (used[randIndex] >= 2){
-       randIndex = QRandomGenerator::global()->bounded(16);
+    int size = sizeof(elements)/sizeof(elements[0]);
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::shuffle(elements, elements+size, rng);
+    for (int i = 1; i <= 5; i++){
+        for (int j = 0; j <= 5; j++){
+            QString randomString = elements[6*(i-1)+j];
+            buttons[i - 1][j]->setText("?");
+            buttons[i - 1][j]->setProperty("name", randomString);
+            connect(buttons[i - 1][j], &QPushButton::clicked, this, &PairMatch::ClickedHandler);
+        }
     }
-    stringToWrite = elements[randIndex];
-    return stringToWrite;
 }
