@@ -15,10 +15,8 @@ public:
     PairMatch(QWidget *parent = nullptr);
 
 private slots:
-    void Increment();
-    void Decrement();
+    void ClickedHandler();
     void Refresh();
-    QString GenerateRandomMatrices(int*, QString *);
 
 private:
     QLabel *scoreWrite;
@@ -26,11 +24,13 @@ private:
     QLabel *scoreCount;
     QLabel *remCount;
 
-    QString previousString;
+    QPushButton *previousButton;
     int pushOrder = 0;
     int textEqual = -5000;
 
-    QString elements[15] = {"Kamilkoc", "Pamukkale", "Varan", "Metro", "Luks Artvin", "Suha",
-    "Nestle", "Ferrero", "Torku", "Ulker", "Eti", "Pasta of Noah's Ankara", "Coca Cola", "Pepsi", "Cola Turka"};
-    int used[15] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    QString elements[30] = {"Kamilkoc", "Pamukkale", "Varan", "Metro", "Luks Artvin", "Suha",
+    "Nestle", "Ferrero", "Torku", "Ulker", "Eti", "Pasta of Noah's Ankara", "Coca Cola", "Pepsi", "Cola Turka",
+    "Kamilkoc", "Pamukkale", "Varan", "Metro", "Luks Artvin", "Suha",
+     "Nestle", "Ferrero", "Torku", "Ulker", "Eti", "Pasta of Noah's Ankara", "Coca Cola", "Pepsi", "Cola Turka"};
+    QPushButton *buttons[5][6];   // Store the buttons in order to change it when necessary.
 };
