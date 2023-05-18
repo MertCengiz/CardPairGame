@@ -37,19 +37,13 @@ PairMatch::PairMatch(QWidget *parent) : QWidget(parent) {
         }
     }
 
-    /*buttons[2][1] = new QPushButton(randomNames[2][1], this);     // TESTING STUFF, NOT IMPORTANT!
-    connect(buttons[2][1], &QPushButton::clicked, this, &PairMatch::Increment);
-    connect(buttons[2][1], &QPushButton::clicked, this, &PairMatch::Decrement);
-    grid->addWidget(buttons[2][1], 2, 1);*/
-   // buttons[2][1] -> setText(randomNames[2][1]);
+
 }
 
 void PairMatch::ClickedHandler() {
 
     int score = scoreCount->text().toInt();
     int remaining = remCount->text().toInt();
-    if (remaining == 0 || score == 15)
-        QApplication::quit(); // Exit the game if no tries left.
     QString text = scoreCount->text();
     QPushButton *clickedButton = qobject_cast<QPushButton*>(sender());
     if (previousButton != clickedButton){
@@ -59,13 +53,17 @@ void PairMatch::ClickedHandler() {
         }
         else if (pushOrder % 2 == 1){
             textEqual = QString::compare(previousButton->property("name").toString(), clickedButton->property("name").toString(), Qt::CaseInsensitive);
+            QEventLoop loop;
+            QTimer::singleShot(350, &loop, &QEventLoop::quit);
+            loop.exec();
             if (textEqual == 0){
                 score++;
                 disconnect(previousButton, &QPushButton::clicked, this, &PairMatch::ClickedHandler);
-                disconnect(clickedButton, &QPushButton::clicked, this, &PairMatch::ClickedHandler);
+                disconnect(clickedButton, &QPushButton::clicked, this, &PairMatch::ClickedHandler);                
+                clickedButton->setText(" ");
+                previousButton->setText(" ");
             }
             else{
-                // TODO: Add delay!
                 clickedButton->setText("?");
                 previousButton->setText("?");
             }
@@ -75,6 +73,20 @@ void PairMatch::ClickedHandler() {
     }
     remCount->setText(QString::number(remaining));
     scoreCount->setText(QString::number(score));
+    if (score == 15){
+        QMessageBox messageBox;
+        messageBox.setText("YOU ARE A WINNER");
+        messageBox.setStandardButtons(QMessageBox::Cancel);
+        messageBox.exec();
+        QApplication::quit(); // Exit the game if no tries left.
+    }
+    if (remaining == 0){
+        QMessageBox messageBox;
+        messageBox.setText("YOU ARE A LOSER");
+        messageBox.setStandardButtons(QMessageBox::Cancel);
+        messageBox.exec();
+        QApplication::quit(); // Exit the game if no tries left.
+    }
 }
 
 void PairMatch::Refresh() {
@@ -95,4 +107,7 @@ void PairMatch::Refresh() {
             connect(buttons[i - 1][j], &QPushButton::clicked, this, &PairMatch::ClickedHandler);
         }
     }
+    pushOrder = 0;
+    textEqual = -5000;
+    //previousButton = NULL;
 }
