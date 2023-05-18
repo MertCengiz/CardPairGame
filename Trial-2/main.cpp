@@ -6,7 +6,6 @@ int main(int argc, char *argv[]) {
 
     PairMatch window;
 
-    //window.resize(300, 190);
     window.setWindowTitle("Card Pair Game");
     window.show();
 
