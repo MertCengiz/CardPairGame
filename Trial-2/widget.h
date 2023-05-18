@@ -6,6 +6,9 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QRandomGenerator>
+#include <QTimer>
+#include <QEventLoop>
+#include <QMessageBox>
 
 class PairMatch : public QWidget {
 
