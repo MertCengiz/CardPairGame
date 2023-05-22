@@ -24,8 +24,7 @@ PairMatch::PairMatch(QWidget *parent) : QWidget(parent) {
     std::random_device rd;
     std::mt19937 rng(rd());
     std::shuffle(elements, elements+size, rng);
-
-
+    // Generate random numbers.
 
     for (int i = 1; i <= 5; i++){
         for (int j = 0; j <= 5; j++){
@@ -36,7 +35,7 @@ PairMatch::PairMatch(QWidget *parent) : QWidget(parent) {
             grid->addWidget(buttons[i - 1][j], i, j);
         }
     }
-
+    // Set the thirty cards to the grid with their properties.
 
 }
 
@@ -46,26 +45,26 @@ void PairMatch::ClickedHandler() {
     int remaining = remCount->text().toInt();
     QString text = scoreCount->text();
     QPushButton *clickedButton = qobject_cast<QPushButton*>(sender());
-    if (previousButton != clickedButton){
+    if (previousButton != clickedButton){   // Pressing a button twice is illegal!
         clickedButton->setText(clickedButton->property("name").toString());
-        if (pushOrder % 2 == 0){
-            previousButton = clickedButton;
+        if (pushOrder % 2 == 0){            // No cards are currently open.
+            previousButton = clickedButton; // Open the card and store it.
         }
         else if (pushOrder % 2 == 1){
             textEqual = QString::compare(previousButton->property("name").toString(), clickedButton->property("name").toString(), Qt::CaseInsensitive);
-            QEventLoop loop;
+            QEventLoop loop;    // Stop taking input for a while.
             QTimer::singleShot(350, &loop, &QEventLoop::quit);
             loop.exec();
             if (textEqual == 0){
-                score++;
+                score++;    // Increase the score, and prevent clicking the buttons again.
                 disconnect(previousButton, &QPushButton::clicked, this, &PairMatch::ClickedHandler);
                 disconnect(clickedButton, &QPushButton::clicked, this, &PairMatch::ClickedHandler);                
-                clickedButton->setText(" ");
-                previousButton->setText(" ");
+                clickedButton->setText(" ");    // Indicate that the card is found.
+                previousButton->setText(" ");   // Indicate that the card is found.
             }
             else{
-                clickedButton->setText("?");
-                previousButton->setText("?");
+                clickedButton->setText("?");    // Close the card.
+                previousButton->setText("?");   // Close the card.
             }
             remaining--; // Decrease val if the two string are not the same.
         }
@@ -109,5 +108,5 @@ void PairMatch::Refresh() {
     }
     pushOrder = 0;
     textEqual = -5000;
-    //previousButton = NULL;
+    // Set everything to default.
 }
