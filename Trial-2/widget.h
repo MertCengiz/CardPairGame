@@ -22,12 +22,12 @@ private slots:
     void Refresh();
 
 private:
-    QLabel *scoreWrite;
-    QLabel *remWrite;
-    QLabel *scoreCount;
-    QLabel *remCount;
+    QLabel *scoreWrite; // Label that writes "Score"
+    QLabel *remWrite;   // Label that writes "Remaining"
+    QLabel *scoreCount; // Label that writes the score
+    QLabel *remCount;   // Label that writes remaining attempts.
 
-    QPushButton *previousButton;
+    QPushButton *previousButton;    // Stores previous button to compare strings.
     int pushOrder = 0;
     int textEqual = -5000;
 
