@@ -1,0 +1,51 @@
+﻿CARD PAIR GAME
+
+
+Özgür Deniz Demir - 2020400003
+Mert Cengiz - 2020400216
+CMPE 230 - Systems Programming
+         22.05.2023                
+
+
+
+
+
+
+
+
+Part I: How to Play Card Pair Game?
+Part II: The Logic Behind Card Pair Game
+Part III: Slots in Card Pair Game
+Part IV: Construction of Card Pair Game
+Part V: Errors Encountered in  Card Pair Game
+Part VI: Conclusion
+________________
+
+
+HOW TO PLAY CARD PAIR GAME?
+Card pair game is a very famous game such that everyone probably has heard the game at least once . Basically one has to open two cards among some number of card pairs and hopes that these two open cards are the pair. If the cards are the same, the player gains a point; otherwise, the cards are closed and the game continues. At first, it might seem easy; however, time and opening restrictions may be applied, which makes this game challenging and forces one to use his/her memory a lot.
+(General View of Card Pair Game)
+  
+
+THE LOGIC BEHIND CARD PAIR GAME
+        There are two labels in top left and top middle showing the score gained and the number of tries remaining, respectively (Default value for score is zero and number of tries is fifty) . Other than these labels, there are 31 buttons that one is able to click. The button that lies on top right called “New Game” refreshes the game (Closes all cards, and sets the score and number of tries to their default values). Other buttons are cards having a string as a property but one sees “?” unless he/she clicks and opens the card. If two open cards are the same, the names disappear, and score increases by one. Number of tries decreases one regardless of the correctness of card matching.
+SLOTS IN CARD PAIR GAME
+REFRESH
+This is the slot where only the “New Game” button may emit a signal to it. At the very beginning of the slot “Refresh”, the integers storing the value of score and number of attempts are set to their default values. Then, all properties of card buttons are set randomly again. At the same time, the texts are set to “?”. At the end, “pushOrder” and “textEqual” are set their default values (They will be explained in Part IV in detail).
+CLICK HANDLER
+When a button except “New Game” is clicked, the property of the card is displayed instead of the question mark. there are two possibilities: currently there might be no open cards, or there might be one open card. In the first possibility, comparison is impossible; moreover, the property of the card must be stored somewhere so that comparison in the next card can be possible. If all cards are open or no tries left, related messages are shown and the program ends.
+If the clicked card is the only open card
+In this case “pushOrder” is even, and the only operation done in this case is storing the property of the pressed button in a variable called “previousButton”.  Then, “pushOrder” is increased by one and the new values of labels are displayed.
+If currently there is an open card
+In this case, the input taking operations are stopped for a while as the first action. Then, the strings in “previousButton” and current button are compared. If they are not equal, both of them take a question mark again as the displaying text and game continues after setting the new values of labels. If they are equal, these open buttons are disconnected from the “ClickedHandler” slot, and their texts are set to empty string. Then, the label values are updated.
+CONSTRUCTION OF CARD PAIR GAME
+The game window consists of four labels and 31 buttons, where thirty of them construct a grid. Firstly, all labels are created and the first and third of them are made of static strings writing “Score” and “Remaining”, respectively. Other labels are score and remaining try integers stored in string values. As one might guess, in the creation phase, they are set to their default values. After the creation of  “New Game” buttons, they are added to the grid.
+Remaining thirty buttons are assigned to a property in a random way. In fact, their properties are chosen in the array “elements” randomly and assigned to the buttons according to their index in the matrix called “buttons”. Then, they are also added to the grid.
+pushOrder (Default: 0)
+This is a counter that increases with every click in a button except the “New Game” button. Via this way, the program can differentiate whether there are currently open cards.
+textEqual (Default: -5000)
+If two strings are equal, it returns zero; else, it returns a number other than zero. The reason why the default value is not zero is to prevent a false equality detection in the first check.
+ERRORS ENCOUNTERED IN CARD PAIR GAME
+Setting properties randomly was causing an error in Card Pair Game. Due to a wrong random number generator implementation, some elements were shown more than two, or less than two, including zero. The solution was quite straightforward: using the C++ built-in random shuffle. The problem directly disappeared.
+CONCLUSION
+        One might have a lot of fun while playing this trivial but challenging game. Good Luck!
